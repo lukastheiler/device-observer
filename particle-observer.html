@@ -1,0 +1,43 @@
+<head>
+  <title>particle-observer</title>
+</head>
+
+<body>
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h3>Particle battery duration</h3></div>
+	  <div class="panel-body">
+ 		 {{> particles}}
+	  </div>
+	  <div class="panel-footer">2016 Lukas Theiler</div>
+	</div>
+
+</body>
+
+<template name="particles">
+  <table class="table table-striped">
+	<thead>
+	  	<tr>
+	  		<th>Script</th>
+	  		<th>Particle</th>
+	  		<th>Series</th>
+	  		<th>Start</th>
+	  		<th>Last</th>
+	  		<th>Duration</th>
+	  		<th>Action</th>
+	  	</tr>
+	</thead>
+	<tbody>
+	  	{{#each particles}}
+		 <tr>
+	  		<td>{{particle}}</td>
+	  		<td>{{script}}</td>
+	  		<td>{{series}}</td>
+	  		<td>{{formatTime start}}</td>
+	  		<td>{{formatTime last}}</td>
+	  		<td>{{duration}}</td>
+	  		<td><span class="glyphicon glyphicon-trash js-delete-measuremet" aria-hidden="true"></span></td>
+	  	</tr>
+		{{/each}}
+	</tbody>
+  </table >
+</template>
