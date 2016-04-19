@@ -1,1 +1,1 @@
-Project to figure out how long the battery of my iot devices last. 
+Battery race with IoT devices - Realtime results on http://theiler.space:81 .
