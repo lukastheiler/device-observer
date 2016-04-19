@@ -1,0 +1,142 @@
+<head>
+  <title>IoT Devices and Battery Duration</title>
+</head>
+
+<body>
+  {{> BootstrapAlerts}}
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">IoT Devices - Battery Duration Tests</a>
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <p class="navbar-text navbar-right">{{> loginButtons}}</p>
+        <p class="navbar-text navbar-right">Don't bother to</p>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  {{> devices}}
+  {{> info}}
+
+  <div class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+      <span class="navbar-text">
+        2016 lukas@theiler.io
+      </span>
+    </div>
+  </div>
+</body>
+
+<template name="devices">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+        <div class=row>
+          <div class="col-md-8">
+            <h4>Tests</h4>
+          </div>
+        </div>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped">
+      	<thead>
+      	  	<tr>
+      	  		<th>Device</th>
+              <th>Script</th>
+              <th>Series</th>
+              <th>Msg</th>
+      	  		<th>Start</th>
+      	  		<th>Last</th>
+              <th>Duration</th>
+              <th>Status</th>
+      	  		{{#if currentUser}}
+                <th>Action</th>
+              {{/if}}
+      	  	</tr>
+      	</thead>
+      	<tbody>
+      	  	{{#each devices}}
+      		 <tr>
+      	  		<td>{{device}}</td>
+              <td>{{script}}</td>
+              <td>{{series}}</td>
+              <td>{{#if currentUser}}
+                    {{> editableText acceptEmpty=true collection="devices" field="msg"}}
+                  {{else}}
+                    {{msg}}
+                  {{/if}}
+              </td>
+      	  		<td>{{formatTime start}}</td>
+      	  		<td>{{formatTime last}}</td>
+              <td>{{duration}}</td>
+              <td>{{{running}}}</td>
+              {{#if currentUser}}
+              <td><span class="glyphicon glyphicon-trash js-delete-measuremet {{trashColor}}" aria-hidden="true"></span>
+                  <span class="glyphicon glyphicon-lock js-lock {{lockColor}}" aria-hidden="true"></span></td>
+              {{/if}}
+
+      	  	</tr>
+      		{{/each}}
+      	</tbody>
+      </table >
+    </div>
+  </div>
+</template>
+
+<template name="info">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+        <div class=row>
+          <div class="col-md-8">
+            <h4>Information</h4>
+          </div>
+        </div>
+    </div>
+    <div class="panel-body">
+      <p>The above devices are all running on the same Battery (3.7V, 650mAh), you'll typically get from some cheap drones. </p>
+      <p>Series explanation per device</p>
+      <ul>
+        <li><b>DSxxx</b>: Deep sleep for xxx seconds. The device basically shuts down completely and starts with init() again.</li>
+        <ul>
+          <li><b><a href="https://www.particle.io/">Particle</a></b>:
+            <code class="language-html" data-lang="c"><span class="nt">
+              <a href="https://docs.particle.io/reference/firmware/electron/#sleep-sleep-">System.sleep(SLEEP_MODE_DEEP, long seconds);</a>
+            </span></code>
+          </li>
+        </ul>
+        <li><b>Sxxx</b>: Sleep for xxx seconds, which depends on the device/hardware. </li>
+        <ul>
+          <li><b><a href="http://lowpowerlab.com/moteino/">Montenino</a></b>:
+            <code class="language-html" data-lang="c"><span class="nt">
+              <a href="https://github.com/matthijskooijman/arduino-lmic/blob/master/examples/ttn/ttn.ino">os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);</a>
+            </span></code>
+          </li>
+        </ul>
+        <li><b>USB-5V</b>: Not running on battery, its just check if the LORA Gateway is still up and running. If its not running, the other LoRa measurement might be temporarily finished. </li>
+      </ul>
+      <p>Scripts</p>
+      <ul>
+        <li><b>P10/P3G01/P3G01</b>: Restful call every 180s, to tell this site, its still alive</li>
+        <li><b>AFFE2702, AFFE2709</b>: MQTT call every 180s, to tell this site, its still alive</li>
+      </ul>
+      <p>Here's an image of the devices - Particle WiFi/2g/3g and the Monteino LoRa- in action:</p>
+      <p>
+        <a href="battery_showdown.png" target="blank">
+          <img href="battery_showdown.png" src="battery_showdown.png" width="25%">
+        </a>
+      </p>
+      <p>More tests will follow! If you want to know more, drop me a line.</p>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <p></p>
+  </div>
+</template>
